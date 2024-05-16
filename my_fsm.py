@@ -142,7 +142,7 @@ def my_fsm(state, task, command, count, flag):
         print("task :", task.id)
     
     elif state == my_parameters.ST_MIXER1:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_1_on)
             if count / 10 > 3:
@@ -177,7 +177,7 @@ def my_fsm(state, task, command, count, flag):
             count = 0
     
     elif state == my_parameters.ST_MIXER2:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_2_on)
             if count / 10 > 3:
@@ -212,7 +212,7 @@ def my_fsm(state, task, command, count, flag):
             count = 0
     
     elif state == my_parameters.ST_MIXER3:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_3_on)
             if count / 10 > 3:
@@ -247,7 +247,7 @@ def my_fsm(state, task, command, count, flag):
             count = 0
     
     elif state == my_parameters.ST_PUMP_IN:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_in_pump_on)
             if count / 10 > 3:
@@ -292,7 +292,7 @@ def my_fsm(state, task, command, count, flag):
             count = 0
     
     elif state == my_parameters.ST_SELECTOR:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 if task.area == "1":
                     my_os.operation_system.add_process(command.select_area_1)
@@ -317,7 +317,7 @@ def my_fsm(state, task, command, count, flag):
             print("state pump out")
     
     elif state == my_parameters.ST_PUMP_OUT:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_out_pump_on)
             if count / 10 > 3:
@@ -361,7 +361,7 @@ def my_fsm(state, task, command, count, flag):
             count = 0
     
     elif state == my_parameters.ST_END_STATE:
-        if command.data == -2 và command.flag == 0:
+        if command.data == -2 and command.flag == 0:
             if count % 10 == 0:
                 if task.area == "1":
                     my_os.operation_system.add_process(command.unselect_area_1)
@@ -382,6 +382,7 @@ def my_fsm(state, task, command, count, flag):
     
     count += 1
     return state, task, command, count, flag
+
 
 class FSM:
     def __init__(self, fsm, task, command, flag=True, count=0) -> None:
