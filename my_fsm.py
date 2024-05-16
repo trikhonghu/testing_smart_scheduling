@@ -134,203 +134,179 @@ def get_humidity():
 
 def my_fsm(state, task, command, count, flag):
     my_os.operation_system.add_process(command.read_connection, 0, 0)
-    # print(flag)
+    
     if state == my_parameters.ST_IDLE:
         state = my_parameters.ST_MIXER1
         my_os.operation_system.add_process(command.turn_mixer_1_on)
         print("state mixer1: ", task.mixer[0])
         print("task :", task.id)
+    
     elif state == my_parameters.ST_MIXER1:
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_1_on)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out1")
                 print("state mixer2: ", task.mixer[1])
                 my_os.operation_system.add_process(command.turn_mixer_1_off)
-                # my_os.operation_system.add_process(command.turn_mixer_2_on)
                 count = 0
-                # state = my_parameters.ST_MIXER2
                 state = my_parameters.ST_MID_1_2
-        elif (command.data != -2):
+        elif command.data != -2:
             command.flag = 1
             command.count = 0
         else:
-            if count >= (task.mixer[0]/my_parameters.SPEED)*10:
+            if count >= (task.mixer[0] / my_parameters.SPEED) * 10:
                 my_os.operation_system.add_process(command.turn_mixer_1_off)
-                # my_os.operation_system.add_process(command.turn_mixer_2_on)
                 count = 0
                 state = my_parameters.ST_MID_1_2
                 command.flag = 0
                 print("state mixer2: ", task.mixer[1])
+    
     elif state == my_parameters.ST_MID_1_2:
-        if (command.data == -2):
-            if (count % 10 == 0):
+        if command.data == -2:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_1_off)
-            if (count/10>3):
+            if count / 10 > 3:
                 print("time out turn mixer1 off")
                 my_os.operation_system.add_process(command.turn_mixer_2_on)
                 state = my_parameters.ST_MIXER2
                 count = 0
-            pass
         elif command.data != -2:
             my_os.operation_system.add_process(command.turn_mixer_2_on)
             state = my_parameters.ST_MIXER2
             count = 0
+    
     elif state == my_parameters.ST_MIXER2:
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
-                # my_os.operation_system.add_process(command.turn_mixer_1_off)
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_2_on)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out2")
                 print("state mixer3: ", task.mixer[2])
                 my_os.operation_system.add_process(command.turn_mixer_2_off)
-                # my_os.operation_system.add_process(command.turn_mixer_3_on)
                 count = 0
-                # state = my_parameters.ST_MIXER3
                 state = my_parameters.ST_MID_2_3
-        elif (command.data != -2):
+        elif command.data != -2:
             command.flag = 1
             command.count = 0
         else:
-            if count >= (task.mixer[1]/my_parameters.SPEED)*10:
+            if count >= (task.mixer[1] / my_parameters.SPEED) * 10:
                 my_os.operation_system.add_process(command.turn_mixer_2_off)
-                # my_os.operation_system.add_process(command.turn_mixer_3_on)
                 count = 0
-                # state = my_parameters.ST_MIXER3
                 state = my_parameters.ST_MID_2_3
                 command.flag = 0
                 print("state mixer3: ", task.mixer[2])
+    
     elif state == my_parameters.ST_MID_2_3:
-        if (command.data == -2):
-            if (count % 10 == 0):
+        if command.data == -2:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_2_off)
-            if (count/10>3):
+            if count / 10 > 3:
                 print("time out turn mixer2 off")
                 my_os.operation_system.add_process(command.turn_mixer_3_on)
                 state = my_parameters.ST_MIXER3
                 count = 0
-            pass
         elif command.data != -2:
             my_os.operation_system.add_process(command.turn_mixer_3_on)
             state = my_parameters.ST_MIXER3
             count = 0
+    
     elif state == my_parameters.ST_MIXER3:
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
-                # my_os.operation_system.add_process(command.turn_mixer_2_off)
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_3_on)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out3")
                 print("state pump in")
                 my_os.operation_system.add_process(command.turn_mixer_3_off)
-                # my_os.operation_system.add_process(command.turn_in_pump_on)
                 count = 0
-                # state = my_parameters.ST_PUMP_IN
                 state = my_parameters.ST_MID_3_4
-        elif (command.data != -2):
+        elif command.data != -2:
             command.flag = 1
             command.count = 0
         else:
-            if count >= (task.mixer[1]/my_parameters.SPEED)*10:
+            if count >= (task.mixer[2] / my_parameters.SPEED) * 10:
                 my_os.operation_system.add_process(command.turn_mixer_3_off)
-                # my_os.operation_system.add_process(command.turn_in_pump_on)
                 count = 0
-                # state = my_parameters.ST_PUMP_IN
                 state = my_parameters.ST_MID_3_4
                 command.flag = 0
                 print("state pump in")
+    
     elif state == my_parameters.ST_MID_3_4:
-        if (command.data == -2):
-            if (count % 10 == 0):
+        if command.data == -2:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_mixer_3_off)
-            if (count/10>3):
+            if count / 10 > 3:
                 print("time out turn mixer3 off")
                 my_os.operation_system.add_process(command.turn_in_pump_on)
                 state = my_parameters.ST_PUMP_IN
                 count = 0
-            pass
         elif command.data != -2:
             my_os.operation_system.add_process(command.turn_in_pump_on)
             state = my_parameters.ST_PUMP_IN
             count = 0
+    
     elif state == my_parameters.ST_PUMP_IN:
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
-                # my_os.operation_system.add_process(command.turn_mixer_3_off)
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_in_pump_on)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out4")
                 print("state selector")
-                # if (task.area == "1"):
-                #     my_os.operation_system.add_process(command.select_area_1)
-                # elif (task.area == "2"):
-                #     my_os.operation_system.add_process(command.select_area_2)
-                # elif (task.area == "3"):
-                #     my_os.operation_system.add_process(command.select_area_3)
                 my_os.operation_system.add_process(command.turn_in_pump_off)
                 count = 0
-                # state = my_parameters.ST_SELECTOR
                 state = my_parameters.ST_MID_4_5
-        elif (command.data != -2):
+        elif command.data != -2:
             command.flag = 1
             command.count = 0
         else:
-            if count >= (20)*10:
-                # if (task.area == "1"):
-                #     my_os.operation_system.add_process(command.select_area_1)
-                # elif (task.area == "2"):
-                #     my_os.operation_system.add_process(command.select_area_2)
-                # elif (task.area == "3"):
-                #     my_os.operation_system.add_process(command.select_area_3)
+            if count >= 20 * 10:
                 my_os.operation_system.add_process(command.turn_in_pump_off)
                 count = 0
-                # state = my_parameters.ST_SELECTOR
                 state = my_parameters.ST_MID_4_5
                 command.flag = 0
                 print("state selector")
+    
     elif state == my_parameters.ST_MID_4_5:
-        if (command.data == -2):
-            if (count % 10 == 0):
+        if command.data == -2:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_in_pump_off)
-            if (count/10>3):
+            if count / 10 > 3:
                 print("time out turn in pump off")
-                if (task.area == "1"):
+                if task.area == "1":
                     my_os.operation_system.add_process(command.select_area_1)
-                elif (task.area == "2"):
+                elif task.area == "2":
                     my_os.operation_system.add_process(command.select_area_2)
-                elif (task.area == "3"):
+                elif task.area == "3":
                     my_os.operation_system.add_process(command.select_area_3)
                 state = my_parameters.ST_SELECTOR
                 count = 0
-            pass
         elif command.data != -2:
-            if (task.area == "1"):
+            if task.area == "1":
                 my_os.operation_system.add_process(command.select_area_1)
-            elif (task.area == "2"):
+            elif task.area == "2":
                 my_os.operation_system.add_process(command.select_area_2)
-            elif (task.area == "3"):
+            elif task.area == "3":
                 my_os.operation_system.add_process(command.select_area_3)
             state = my_parameters.ST_SELECTOR
             count = 0
+    
     elif state == my_parameters.ST_SELECTOR:
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
-                if (task.area == "1"):
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
+                if task.area == "1":
                     my_os.operation_system.add_process(command.select_area_1)
-                elif (task.area == "2"):
+                elif task.area == "2":
                     my_os.operation_system.add_process(command.select_area_2)
-                elif (task.area == "3"):
+                elif task.area == "3":
                     my_os.operation_system.add_process(command.select_area_3)
-                # my_os.operation_system.add_process(command.turn_in_pump_off)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out5")
                 print("state pump out")
                 my_os.operation_system.add_process(command.turn_out_pump_on)
                 count = 0
                 state = my_parameters.ST_PUMP_OUT
-        elif (command.data != -2):
+        elif command.data != -2:
             command.flag = 1
             command.count = 0
         else:
@@ -339,92 +315,73 @@ def my_fsm(state, task, command, count, flag):
             state = my_parameters.ST_PUMP_OUT
             command.flag = 0
             print("state pump out")
+    
     elif state == my_parameters.ST_PUMP_OUT:
-
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_out_pump_on)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out6")
-                # if (task.area == "1"):
-                #     my_os.operation_system.add_process(command.unselect_area_1)
-                # elif (task.area == "2"):
-                #     my_os.operation_system.add_process(command.unselect_area_2)
-                # elif (task.area == "3"):
-                #     my_os.operation_system.add_process(command.unselect_area_3)
                 my_os.operation_system.add_process(command.turn_out_pump_off)
                 count = 0
-                # state = my_parameters.ST_END_STATE
                 state = my_parameters.ST_MID_6_7
-        elif (command.data != -2):
+        elif command.data != -2:
             command.flag = 1
             command.count = 0
         else:
-            if count >= 20*10:
-                # if (task.area == "1"):
-                #     my_os.operation_system.add_process(command.unselect_area_1)
-                # elif (task.area == "2"):
-                #     my_os.operation_system.add_process(command.unselect_area_2)
-                # elif (task.area == "3"):
-                #     my_os.operation_system.add_process(command.unselect_area_3)
+            if count >= 20 * 10:
                 my_os.operation_system.add_process(command.turn_out_pump_off)
                 count = 0
-                # state = my_parameters.ST_END_STATE
                 state = my_parameters.ST_MID_6_7
                 command.flag = 0
                 task.cycle_num -= 1
+    
     elif state == my_parameters.ST_MID_6_7:
-        if (command.data == -2):
-            if (count % 10 == 0):
+        if command.data == -2:
+            if count % 10 == 0:
                 my_os.operation_system.add_process(command.turn_out_pump_off)
-            if (count/10>3):
+            if count / 10 > 3:
                 print("time out turn out pump off")
-                if (task.area == "1"):
+                if task.area == "1":
                     my_os.operation_system.add_process(command.unselect_area_1)
-                elif (task.area == "2"):
+                elif task.area == "2":
                     my_os.operation_system.add_process(command.unselect_area_2)
-                elif (task.area == "3"):
+                elif task.area == "3":
                     my_os.operation_system.add_process(command.unselect_area_3)
                 state = my_parameters.ST_END_STATE
                 count = 0
-            pass
         elif command.data != -2:
-            if (task.area == "1"):
+            if task.area == "1":
                 my_os.operation_system.add_process(command.unselect_area_1)
-            elif (task.area == "2"):
+            elif task.area == "2":
                 my_os.operation_system.add_process(command.unselect_area_2)
-            elif (task.area == "3"):
+            elif task.area == "3":
                 my_os.operation_system.add_process(command.unselect_area_3)
             state = my_parameters.ST_END_STATE
             count = 0
+    
     elif state == my_parameters.ST_END_STATE:
-        if (command.data == -2 and command.flag == 0):
-            if (count % 10 == 0):
-                if (task.area == "1"):
+        if command.data == -2 và command.flag == 0:
+            if count % 10 == 0:
+                if task.area == "1":
                     my_os.operation_system.add_process(command.unselect_area_1)
-                elif (task.area == "2"):
+                elif task.area == "2":
                     my_os.operation_system.add_process(command.unselect_area_2)
-                elif (task.area == "3"):
+                elif task.area == "3":
                     my_os.operation_system.add_process(command.unselect_area_3)
-                # my_os.operation_system.add_process(command.turn_out_pump_off)
-            if (count / 10 > 3):
+            if count / 10 > 3:
                 print("time out7")
-                # state = my_parameters.ST_IDLE
                 my_parameters.status = my_parameters.DONE
                 task.cycle_num -= 1
                 count = 0
                 flag = False
-                # print(my_parameters.status)
-        elif (command.data != -2):
-            # state = my_parameters.ST_IDLE
+        elif command.data != -2:
             my_parameters.status = my_parameters.DONE
             task.cycle_num -= 1
             count = 0
-    # print("in FSM",my_parameters.status)
     
     count += 1
     return state, task, command, count, flag
-
 
 class FSM:
     def __init__(self, fsm, task, command, flag=True, count=0) -> None:
