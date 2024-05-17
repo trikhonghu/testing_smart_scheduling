@@ -96,7 +96,7 @@ def check_running_task():
         elif my_parameters.status == DONE:
             my_os.operation_system.remove_process(fsm.run_fsm)
             fsm = None
-            if running.task_list[0].cycle_num == 0:
+            if running.task_list[0].cycle_num <= 0:
                 r2w = {
                     "code": "r2w",
                     "id": running.task_list[0].id,
@@ -106,7 +106,7 @@ def check_running_task():
                 my_server.server_gateway.client.publish("kido2k3/feeds/iot-gateway", r2w)
                 running.task_list[0].cycle_num = running.task_list[0].cycle_num_const
                 waiting.task_list.append(running.task_list.pop(0))
-            elif running.task_list[0].cycle_num != 0:
+            elif running.task_list[0].cycle_num > 0:
                 update = {
                     "code": "update",
                     "id": running.task_list[0].id,
